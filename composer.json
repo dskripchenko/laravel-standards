@@ -1,0 +1,42 @@
+{
+    "name": "dskripchenko/laravel-standards",
+    "description": "Source of truth for PHP, Laravel and Vue projects: coding style, architecture, security, documentation and the packages a project may use. No PHP code. AGENTS.md is the file models must follow.",
+    "type": "library",
+    "keywords": [
+        "laravel",
+        "php",
+        "vue",
+        "standards",
+        "agents",
+        "documentation",
+        "dskripchenko"
+    ],
+    "homepage": "https://github.com/dskripchenko/laravel-standards",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Denis Skripchenko",
+            "email": "denskrp90@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/dskripchenko/laravel-standards/issues",
+        "source": "https://github.com/dskripchenko/laravel-standards"
+    },
+    "require": {
+        "php": "*"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.x-dev"
+        },
+        "dskripchenko": {
+            "agents": "AGENTS.md"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

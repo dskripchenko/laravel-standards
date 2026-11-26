@@ -1,0 +1,12 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    # Replace this with the level the project already passes. Do not lower it.
+    level: max
+    paths:
+        - app
+        - tests
+    # A baseline only shrinks. Do not add a new ignored error to finish a task.
+    # includes:
+    #     - phpstan-baseline.neon

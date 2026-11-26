@@ -1,0 +1,17 @@
+[project]
+name = "e2e"
+version = "0.0.0"
+requires-python = ">=3.12"
+dependencies = [
+    "allure-pytest",
+    "pytest",
+    "pytest-playwright",
+]
+
+[tool.pytest.ini_options]
+addopts = "-q --browser chromium"
+testpaths = ["scenarios"]
+markers = [
+    "smoke: short path of one product",
+    "regress: regression set of one product",
+]
