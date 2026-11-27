@@ -1,6 +1,7 @@
 # ADR-000. Title
 
 - Id: ADR-000
+- Author: name
 - Date: YYYY-MM-DD
 - Status: proposed
 

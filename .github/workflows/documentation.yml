@@ -1,0 +1,108 @@
+name: Documentation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Check documents and templates
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          import re
+          import sys
+          import tomllib
+
+          root = Path.cwd()
+          errors = []
+          markdown_files = [
+              path for path in root.rglob('*.md')
+              if '.git' not in path.parts and 'vendor' not in path.parts
+          ]
+
+          for path in markdown_files:
+              text = path.read_text(encoding='utf-8')
+              for match in re.finditer(r'(?<!!)\[[^\]]*\]\(([^)]+)\)', text):
+                  target = match.group(1).strip().split()[0].strip('<>')
+                  if not target or target.startswith(('http://', 'https://', 'mailto:', '#')):
+                      continue
+                  target = target.split('#', 1)[0]
+                  if target and not (path.parent / target).resolve().exists():
+                      line = text.count('\n', 0, match.start()) + 1
+                      errors.append(f'{path.relative_to(root)}:{line}: broken link {target}')
+
+          agents = (root / 'AGENTS.md').read_text(encoding='utf-8')
+          definitions = re.findall(r'^\*\*([A-Z][A-Z0-9]*-[0-9]{2})\.\*\*', agents, re.M)
+          duplicates = sorted({code for code in definitions if definitions.count(code) > 1})
+          if duplicates:
+              errors.append(f'Duplicate rule definitions: {duplicates}')
+
+          prefixes = (
+              'CORE', 'STACK', 'PRIN', 'LANG', 'DEP', 'PHP', 'SHAPE', 'API',
+              'DB', 'FE', 'ADM', 'SEC', 'TEST', 'E2E', 'DOM', 'JOB', 'INT',
+              'FLAG', 'OBS', 'CACHE', 'DOC', 'GIT', 'PKG', 'STD',
+          )
+          code_pattern = rf'(?<![A-Z0-9])(?:{"|".join(prefixes)})-[0-9]{{2}}\b'
+          defined = set(definitions)
+          for path in markdown_files:
+              for code in re.findall(code_pattern, path.read_text(encoding='utf-8')):
+                  if code not in defined:
+                      errors.append(f'{path.relative_to(root)}: undefined rule {code}')
+
+          english_docs = {path.name for path in (root / 'docs').glob('*.md')}
+          russian_docs = {path.name for path in (root / 'docs' / 'ru').glob('*.md')}
+          for name in sorted(english_docs - russian_docs):
+              errors.append(f'docs/{name}: missing Russian translation')
+          for name in sorted(russian_docs - english_docs):
+              errors.append(f'docs/ru/{name}: no English source')
+          for name in sorted(english_docs & russian_docs):
+              english = (root / 'docs' / name).read_text(encoding='utf-8')
+              russian = (root / 'docs' / 'ru' / name).read_text(encoding='utf-8')
+              english_codes = set(re.findall(code_pattern, english))
+              russian_codes = set(re.findall(code_pattern, russian))
+              if english_codes != russian_codes:
+                  errors.append(
+                      f'docs/{name}: translation rule codes differ; '
+                      f'English only={sorted(english_codes - russian_codes)}, '
+                      f'Russian only={sorted(russian_codes - english_codes)}'
+                  )
+
+          data_files = [
+              path for path in root.rglob('*')
+              if path.is_file() and '.git' not in path.parts and 'vendor' not in path.parts
+          ]
+          for path in data_files:
+              try:
+                  if path.suffix == '.json':
+                      json.loads(path.read_text(encoding='utf-8'))
+                  elif path.suffix == '.toml':
+                      tomllib.loads(path.read_text(encoding='utf-8'))
+              except (UnicodeDecodeError, json.JSONDecodeError, tomllib.TOMLDecodeError) as error:
+                  errors.append(f'{path.relative_to(root)}: {error}')
+
+          if errors:
+              print('\n'.join(errors))
+              sys.exit(1)
+
+          print(
+              f'Checked {len(markdown_files)} Markdown files, '
+              f'{len(defined)} rule codes, JSON and TOML templates.'
+          )
+          PY

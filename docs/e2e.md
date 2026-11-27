@@ -50,10 +50,10 @@ A tester, locally:
 | all | every scenario of one product |
 
 The base URL is an argument or an environment variable, not a host
-written in the test. A scheduled run is a later step. CI runs the suite
-only as a stage the project turns on (`E2E-03`). A red end-to-end stage
-that the project has turned on is a failure. A stage that does not exist
-is not a waiver of `E2E-04`.
+written in the test. A scheduled run is a later step. By default, an
+end-to-end result is not a merge gate (`E2E-03`). A project may explicitly
+turn on a CI stage; a red stage it has turned on is a failure. A stage that
+does not exist is not a waiver of the delivery evidence in `E2E-04`.
 
 ## What the author of a UI change delivers
 
@@ -62,12 +62,14 @@ In the same merge request, as its own commit:
 1. The scenario, added or updated.
 2. The new `data-testid` values and the catalogue line.
 3. A note of one local run: the stand URL's environment name, the
-   command, and the outcome. Do not paste secrets or personal data.
+   command, and the outcome. If the stand is unavailable, record the
+   concrete reason instead. Do not paste secrets or personal data.
 
 A failure found while writing the scenario goes to `docs/findings.md`
 (`templates/e2e-findings.md`) when it is not fixed in this merge request.
 A product defect is a tracker issue. The finding file does not replace
-the issue.
+the issue. A failed or unavailable local run is not itself a merge blocker
+under `E2E-03`; an explicitly enabled red CI stage still blocks the merge.
 
 ## Flags
 

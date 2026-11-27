@@ -5,7 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-## [1.0.0] - 2026-11-26
+## [1.0.0] - 2026-11-27
 
 ### Added
 
@@ -13,9 +13,20 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   and from the house applications and packages.
 - `AGENTS.md` as the file a model reads before changing a project.
 - English chapters in `docs/` and the Russian translation in `docs/ru/`.
+- Team installation through the Git repository and a released tag before
+  Packagist publication.
+- Agent compatibility verification and an explicit read fallback for agents
+  that do not expand `@` imports.
+- Documentation CI for local links, rule codes, translations, JSON and TOML.
 
 ### Changed
 
+- `TEST-02` now defines the 70% diff-coverage formula, its zero-line case
+  and its no-rounding rule.
+- `E2E-03` and `E2E-04` distinguish delivery evidence from a merge gate and
+  define how to record a failed or unavailable local run.
+- The PHP chapter names the handbook controller exception to constructor
+  injection.
 - The package is the base. A project's ADR, `AGENTS.md`, `CLAUDE.md` and,
   for a handbook project, the house handbook override and extend it.
 - Four shapes: forge, handbook, laravel-admin and legacy, each in `shapes/`.
@@ -42,3 +53,15 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Copy templates in `templates/` and procedures in `recipes/`.
 - Versions of this package: a new requirement is minor, a relaxed
   requirement is major.
+
+### Fixed
+
+- The audit recipe no longer allows guessed passport facts (`CORE-04`).
+- `DB-04` now limits the written `SELECT *` prohibition to raw SQL, and
+  `DB-05` names the additive-change exception already shown in its chapter.
+- The endpoint recipe includes owner approval for a new public route.
+- The migration recipe names the timestamp exceptions correctly.
+- The ADR template includes the author, and the existing PHPStan template no
+  longer contains commented-out configuration.
+- Russian translations and the frontend configuration templates are aligned
+  with the English rules.

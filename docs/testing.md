@@ -5,9 +5,12 @@ engine and major version as production (`DB-01`). SQLite is forbidden.
 
 A new application, and a domain after `DOM-01`, gates on `TEST-01`: 80%
 lines of project PHP, 70% lines of UI that has logic. An older application
-gates on `TEST-02`: about 70% of the lines the merge request changes, and
-the repository's total coverage does not go down. The passport names the
-diff command. End-to-end tests are not part of either percentage
+gates on `TEST-02`: at least 70% of the changed executable lines in each
+coverage report, and the repository's total coverage does not go down.
+Diff coverage is covered changed executable lines divided by all changed
+executable lines, multiplied by 100. A report with no changed executable
+lines is `n/a`, and the percentage is not rounded up. The passport names
+the diff command. End-to-end tests are not part of either percentage
 (`e2e.md`).
 
 ## Backend

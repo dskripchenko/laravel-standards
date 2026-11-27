@@ -77,5 +77,12 @@ and `templates/project-passport.md`. Text after the import overrides and
 extends the package (`CORE-01`). Do not copy the standards into the
 application.
 
+An `@` import is not portable across every agent. Verify each agent the
+team uses. If it does not expand the import, give its native instruction
+file the explicit read instruction from `templates/claude-import.md`.
+Record the result in `templates/agent-compatibility.md` or the equivalent
+project document. A verified agent can cite the installed standards version
+and the project shape from the files it read.
+
 This package's own versions follow `STD-01`. The passport records the
 version the project follows.

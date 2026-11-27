@@ -57,7 +57,9 @@ enum OrderStatus: string
 Constants are typed and `UPPER_SNAKE_CASE`. Enum cases are PascalCase. Do not
 encode a closed set as class constants.
 
-Constructor promotion for dependencies and for immutable data:
+Constructor promotion is for dependencies and immutable data. Handbook
+controllers are the exception: their dependencies enter through the method
+(`shapes/handbook.md`).
 
 ```php
 final class ArchiveProject

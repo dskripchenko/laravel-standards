@@ -7,6 +7,7 @@ not apply only after you are sure. An empty cell means "stop and ask"
 | Fact | Value |
 | --- | --- |
 | Standards | `dskripchenko/laravel-standards` @ `<version>` |
+| AI agents | Compatibility record from `agent-compatibility.md` or its location |
 | Shape | `forge` \| `handbook` \| `laravel-admin` \| `legacy` |
 | PHP / Laravel | |
 | Database | engine and major version, same in tests and production |

@@ -12,6 +12,8 @@
 5. Commit the scenario separately from the product code, in the same
    merge request.
 6. Run it once against a stand. Write the command and the outcome in the
-   merge request (`E2E-04`). Do not paste a secret or a personal record.
+   merge request (`E2E-04`). If the stand is unavailable, record the reason
+   instead. Put an unresolved failure in the findings file and a product
+   defect in the tracker. Do not paste a secret or a personal record.
 7. A unit or feature test still covers the server rule the form depends
    on. The scenario does not replace it (`TEST-04`).
