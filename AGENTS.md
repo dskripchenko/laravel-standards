@@ -46,8 +46,9 @@ paywall or an access control.
 is `templates/project-passport.md`. It records the shape, the database
 engine and version, where end-to-end tests live and in which language, the
 tracker key if there is one, the branch scheme, the documentation language,
-the ADR folder, the formatter, the check commands, and the version of this
-package the project follows. Do not guess a fact the passport is there to
+the ADR folder, the formatter, the check commands, the agents the team uses
+with their verified import or explicit read fallback, and the version of
+this package the project follows. Do not guess a fact the passport is there to
 state. If the passport is missing, fill it from the repository and show it
 to the owner before relying on it.
 
@@ -351,17 +352,18 @@ schema builder. Reach for `DB::statement` for features the builder cannot
 express. Name indexes `{table}_{columns}_{suffix}` with a suffix of
 `index`, `unique`, `gin` or `gist`.
 
-**DB-04.** Do not write `SELECT *`. Do not put a function around an indexed
-column in `WHERE`. Do not paginate a large table with a growing `OFFSET`;
-use a keyset. Eager-load every relation you touch. Call
-`Model::preventLazyLoading()` outside production. Prefer `loadMissing` and
-`withCount` to a loop that queries. A raw statement is allowed when the
+**DB-04.** Do not write `SELECT *` in a raw SQL statement. Do not put a
+function around an indexed column in `WHERE`. Do not paginate a large table
+with a growing `OFFSET`; use a keyset. Eager-load every relation you touch.
+Call `Model::preventLazyLoading()` outside production. Prefer `loadMissing`
+and `withCount` to a loop that queries. A raw statement is allowed when the
 builder cannot say it. Bind every value. Do not concatenate input into SQL.
 
-**DB-05.** A change to a table that already holds live data follows
-expand, then backfill, then contract. A column or a constraint is removed
-in a later release, after the readers are gone. An index on a large table
-is built concurrently, outside the migration transaction, on an engine
+**DB-05.** A non-additive change to a table that already holds live data
+follows expand, then backfill, then contract. A purely additive change does
+not need the backfill and contract phases. A column or a constraint is
+removed in a later release, after the readers are gone. An index on a large
+table is built concurrently, outside the migration transaction, on an engine
 that supports it. A data backfill is its own step, not a statement inside
 the schema migration. `down()` rolls back a schema that has not been
 applied to production. Production deploy does not run `down()`.
@@ -466,10 +468,12 @@ real personal record.
 (`DOM-01`), gates on line coverage: at least 80% of project PHP and at
 least 70% of UI that has logic.
 
-**TEST-02.** An older application gates on the lines the merge request
-changes. The orientation is 70% of those lines. The repository's total
-coverage does not go down. The passport records the command that computes
-the diff.
+**TEST-02.** An older application gates on at least 70% of the executable
+lines the merge request changes in each coverage report. Diff coverage is
+covered changed executable lines divided by all changed executable lines,
+multiplied by 100. A report with no changed executable lines is `n/a`.
+Do not round the percentage up. The repository's total coverage does not go
+down. The passport records the command that computes the diff.
 
 **TEST-03.** Feature tests use `RefreshDatabase` against the production
 engine (`DB-01`), factories, and fakes for mail, HTTP, queues and
@@ -513,15 +517,19 @@ their own `pyproject.toml` and lockfile. They do not import the site's
 code. The site and the tests meet at the stand URL and at `data-testid`.
 A scenario for a task is a separate commit in the same merge request.
 
-**E2E-03.** End-to-end tests do not block the merge. A tester runs smoke,
-regression, or every scenario of one product against a stand URL. A
-scheduled run comes later. CI runs them only as a stage the project turns
-on itself.
+**E2E-03.** End-to-end test results do not block the merge by default. A
+tester runs smoke, regression, or every scenario of one product against a
+stand URL. A scheduled run comes later. A failed or unavailable local run
+under `E2E-04` is recorded, not used as an implicit merge gate. CI runs the
+suite only as a stage the project turns on itself; an enabled red stage is
+a merge failure.
 
 **E2E-04.** A task that changes a screen still does three things: add or
 update the scenario, put `data-testid` on new fields and buttons and
 update the catalogue, and record in the merge request one local run
-against a stand. Regression and the schedule belong to testing.
+against a stand or the concrete reason the run was impossible. Record an
+unresolved failure in the findings file and put a product defect in the
+tracker. Regression and the schedule belong to testing.
 
 Details, the forge exception and the templates are in `docs/e2e.md`.
 

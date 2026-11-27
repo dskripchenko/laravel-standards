@@ -131,10 +131,25 @@ final class ProjectsController extends Controller
 }
 ```
 
-Класс версии регистрирует контроллер в `getMethods()`. Операция сложнее
-запроса живёт рядом с моделью (`Domain/Projects/ArchiveProject.php`), не в
-контроллере. Исходящие вызовы — в `Integrations/`, и только они знают
-формат чужого API.
+Класс версии регистрирует контроллер:
+
+```php
+public static function getMethods(): array
+{
+    return [
+        'controllers' => [
+            'projects' => [
+                'controller' => ProjectsController::class,
+                'actions' => ['list', 'show', 'save'],
+            ],
+        ],
+    ];
+}
+```
+
+Операция сложнее запроса живёт рядом с моделью
+(`Domain/Projects/ArchiveProject.php`), не в контроллере. Исходящие вызовы —
+в `Integrations/`, и только они знают формат чужого API.
 
 В этот каркас не добавляют корневые `app/Actions`, свалку `app/Services`,
 `app/Builders`, `spatie/laravel-data`, репозиторий на каждую модель и Orchid.
@@ -155,6 +170,17 @@ final class ProjectsController extends Controller
 | `app/Http/Requests` | `FormRequest` | Валидация и, для нестандартных действий, авторизация |
 | `app/Policies` | — | Одна политика на модель |
 | `app/Orchid/Sections/<Entity>` | — | Экраны списка, правки и просмотра |
+
+Контроллер получает действие через метод:
+
+```php
+public function store(StoreProjectRequest $request, CreateProjectAction $createProject): JsonResponse
+{
+    $project = ($createProject)(ProjectData::from($request->validated()));
+
+    return response()->json(new ProjectResource($project), 201);
+}
+```
 
 Зависимость контроллера приходит в метод, не в конструктор. Единственное
 допустимое использование конструктора — `authorizeResource()`.

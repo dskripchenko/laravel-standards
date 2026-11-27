@@ -23,8 +23,18 @@ the project already uses:
 composer require dskripchenko/laravel-standards
 ```
 
-Until the package is on Packagist, point Composer at a local checkout. When
-the application sits next to this repository, `url` is `../laravel-standards`:
+Until the package is on Packagist, use the Git repository and a released
+tag in a shared project:
+
+```bash
+composer config repositories.laravel-standards vcs https://github.com/dskripchenko/laravel-standards
+composer require dskripchenko/laravel-standards:^1.0
+```
+
+Commit the application's lockfile so every developer uses the same release.
+For local work on the standards themselves, point Composer at a local
+checkout. When the application sits next to this repository, `url` is
+`../laravel-standards`:
 
 ```json
 {
@@ -70,6 +80,16 @@ including when Composer installed the package as a symlink. Do not copy
 A model that opens the repository starts at the project's `AGENTS.md` or
 `CLAUDE.md`, follows the import, and then applies the passport and the
 overrides written under it.
+
+## Verify every agent
+
+Not every agent expands an `@` import. For an agent that does not, put the
+explicit read instruction from `templates/claude-import.md` in its native
+instruction file. Do not replace the import with a copied snapshot.
+
+Record each verified agent in `templates/agent-compatibility.md` or the
+equivalent project document. Verification means the agent can cite the
+installed standards version and the project shape from the files it read.
 
 ## What wins
 

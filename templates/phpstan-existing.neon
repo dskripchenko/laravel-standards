@@ -7,6 +7,5 @@ parameters:
     paths:
         - app
         - tests
-    # A baseline only shrinks. Do not add a new ignored error to finish a task.
-    # includes:
-    #     - phpstan-baseline.neon
+    # To use an existing baseline, include phpstan-baseline.neon at the top
+    # of this file. A baseline only shrinks. Do not add an ignored error.

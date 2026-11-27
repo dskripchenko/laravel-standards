@@ -4,7 +4,7 @@
    rewrites them, stop (`CORE-08`, `DB-05`). Agree expand, backfill and
    contract before writing the file.
 2. Anonymous migration class, `up` and `down`. A comment on every new
-   column except the four timestamps and `id` (`DB-03`).
+   column except `id`, `created_at`, `updated_at` and `deleted_at` (`DB-03`).
 3. Status values go in the column comment and in a backed enum on the model.
 4. A large PostgreSQL index uses `CONCURRENTLY` and
    `$withinTransaction = false` (`docs/database.md`).
